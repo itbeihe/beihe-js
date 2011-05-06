@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title></title>
+	<script type="text/javascript" src="base.js"></script>
+	
+</head>
+<body>
+	<div id="div" style="width:200px; height:200px;border:1px solid #000;">
+		test
+	</div>
+	<script type="text/javascript">
+		var div = document.getElementById("div");
+		var Class = function(div){
+			this.div = div;
+			this._test = null;
+			this._remove = null;
+		}
+		Class.prototype = {
+			constroctor:Class,
+			test:function(event){
+				alert(this.div.innerHTML);
+				alert(event.clientX);
+			},
+			test2:function(event){
+				alert("不要删除:"+event.clientX)
+			},
+			add:function(){
+				this._test = bh.eventBridge(this,this.test);
+				bh.addEvent("click",this.div,this._test)
+				bh.addEvent("mouseout",this.div,this.test2)
+			},
+			remove:function(){
+				bh.removeEvent("click",this.div,this._test);
+			}
+		}
+		var class1 = new Class(div);
+		class1.add();
+		class1.remove();
+	</script>
+</body>
+</html>

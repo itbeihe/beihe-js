@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title></title>
+	<script type="text/javascript" src="base.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+		var Person = bh.create({
+			init:function(name,sex){
+				this.name = name;
+				this.sex = sex;
+			},
+			getName:function(){
+				alert(this.name);
+			},
+			getSex:function(){
+				alert(this.sex)
+			}
+		})
+		var Worker = bh.extend(Person,{
+			init:function(name,sex,age){
+				this._super(name,sex);
+				this.age = age;
+			},
+			getName:function(){
+				alert("新"+this.name);
+			},
+			getAge:function(){
+				alert(this.age);
+			}
+		})
+		var person = new Person("zhangsan","man");
+		person.getName();
+		var worker = new Worker("lisi","women",13);
+		worker.getSex();
+	</script>
+</body>
+</html>
