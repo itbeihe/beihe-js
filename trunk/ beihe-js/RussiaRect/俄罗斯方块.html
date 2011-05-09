@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title>俄罗斯方块</title>
+	<style type="text/css">
+		.e_div{border-top:1px solid #ccc;border-left:1px solid #ccc;width:240px; overflow:hidden;}
+		.c_div{border-bottom:1px solid #ccc;border-right:1px solid #ccc;width:19px;height:19px;float:left;}
+		.c_over{border-bottom:1px solid #ccc;border-right:1px solid #ccc;width:19px;height:19px;float:left;background:#C2222A;}
+	</style>
+	<script type="text/javascript" src="../js/base.js"></script>
+</head>
+<body>
+	<div id="russia"></div>
+	<script type="text/javascript">
+		var Russia = bh.create({
+			init:function(obj,figure){
+				this.e_div = document.createElement("div");
+				this.e_div.className = "e_div"
+				this.o_divs = []
+				this.c_divs = [];
+				this.now_div = null;
+				this.next_div = null;
+				this.figure = figure;
+				this.setTimeoutId = null;
+				for(i=0;i<18;i++){
+					this.c_divs[i] = []
+					for(j=0;j<12;j++){
+						var _div = document.createElement("div");
+						_div.className = "c_div";
+						this.e_div.appendChild(_div);
+						this.c_divs[i][j] = _div;
+					}
+				}
+				obj.appendChild(this.e_div);
+			},
+			load:function(){
+				this.now_div = this.next_div || figure.createfigure();
+				this.next_div = figure.createfigure();
+			},
+			moveDown:function(){
+				if(this.now_div[1].x<17&&this.now_div[2].x<17&&this.now_div[3].x<17&&this.now_div[4].x<17){
+					this.c_divs[this.now_div[1].x][this.now_div[1].y].className = "c_div";
+					this.c_divs[this.now_div[2].x][this.now_div[2].y].className = "c_div";
+					this.c_divs[this.now_div[3].x][this.now_div[3].y].className = "c_div";
+					this.c_divs[this.now_div[4].x][this.now_div[4].y].className = "c_div";
+					this.now_div[1].x += 1;
+					this.now_div[2].x += 1;
+					this.now_div[3].x += 1;
+					this.now_div[4].x += 1;
+					this.c_divs[this.now_div[1].x][this.now_div[1].y].className = "c_over";
+					this.c_divs[this.now_div[2].x][this.now_div[2].y].className = "c_over";
+					this.c_divs[this.now_div[3].x][this.now_div[3].y].className = "c_over";
+					this.c_divs[this.now_div[4].x][this.now_div[4].y].className = "c_over";
+				}
+				
+			},
+			moveLeft:function(){
+			
+			},
+			moveRight:function(){
+			
+			}
+		})
+		var FigureManage = bh.create({
+			init:function(){
+				var rects = [];
+			},
+			createfigure:function (){
+				rects = [1,{x:1,y:1},{x:1,y:0},{x:0,y:1},{x:1,y:2}];
+				return rects;
+			}
+		})
+		var figure = new FigureManage;
+		var russia = new Russia(bh("russia"),figure);
+		russia.load();
+		
+		var test = function(){	
+			russia.moveDown();
+			setTimeout(test,100)
+		}
+		test();
+	</script>
+</body>
+</html>
