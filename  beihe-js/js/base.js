@@ -1,5 +1,5 @@
 /**
- * @author Administrator
+ * @author beihe
  */
 (function(){
 	if(!window.bh){window.bh={}};
@@ -183,4 +183,13 @@
 		}
 	}
 	window.bh.getCharCode = getCharCode;
+	
+	//css行为
+	function addClassName(obj,newclass){
+		var name = obj.className;
+		name =name +" "+ newclass;
+		obj.className = name;
+	}
+	window.bh.addClassName = addClassName;
+	
 })()
