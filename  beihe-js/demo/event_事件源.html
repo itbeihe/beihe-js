@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title>event事件测试-获取事件源</title>
+	<script type="text/javascript" src="../js/base.js"></script>
+	<style>
+		#div1,#div2{width:200px;height:200px; border:1px solid #000;}
+		#div3{width:50px;height:50px;border:1px solid #00ff00}
+	</style>
+</head>
+<body>
+	<div id="div1">
+		<div id="div3"></div>
+	</div>
+	<div id="div2">
+		点击获取源对象id
+	</div>
+	<div>
+		<a id="alink" href="http://www.163.com" >163</a>
+	</div>
+	<script type="text/javascript">
+		var getTargetTest = function(event){
+			alert(bh.getTarget(event).id);
+		}
+		bh.addEvent("click",document,getTargetTest);
+		
+	</script>
+</body>
+</html>
