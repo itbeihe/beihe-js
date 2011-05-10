@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title>俄罗斯方块</title>
+	<style type="text/css">
+		.e_div{border-top:1px solid #ccc;border-left:1px solid #ccc;width:240px; overflow:hidden;}
+		.c_div{border-bottom:1px solid #ccc;border-right:1px solid #ccc;width:19px;height:19px;float:left;}
+		.c_over{border-bottom:1px solid #ccc;border-right:1px solid #ccc;width:19px;height:19px;float:left;background:#C2222A;}
+		.c_end{border-bottom:1px solid #ccc;border-right:1px solid #ccc;width:19px;height:19px;float:left;background:#555555;}
+		#scorePannel{font-weight:bold;padding-left:50px ;}
+	</style>
+	<script type="text/javascript" src="../js/base.js"></script>
+</head>
+<body>
+	<div id="area">
+	<div id="sidebar">
+		<input type="button" value="开始" id="startButton">
+		<input type="button" value="暂停" id="pauseButton">
+		分数：<span id="scorePannel">0</span>
+	</div>
+	<div id="russia"></div>
+	<div>
+		w变换 a左移动  d右移动 s加速
+		作者: 北河
+	</div>
+	</div>
+	<script type="text/javascript">
+		var Russia = bh.create({
+			init:function(obj,height,width,scorePannel){
+				this.score = 0;
+				this.scorePannel = scorePannel;
+				this.height =height;
+				this.width = width;
+				this.e_div = document.createElement("div");
+				this.e_div.tabIndex= -1;
+				this.e_div.className = "e_div"
+				this.e_div.style.width = (20*width) +"px";
+				this.c_divs = [];
+				this.now_div = {};
+				this.next_div = {};
+				this.setTimeoutId = null;
+				this.pressEvent = bh.eventBridge(this,this.keyHandle);
+				for(i=0;i<this.height;i++){
+					this.c_divs[i] = []
+					for(j=0;j<this.width;j++){
+						var _div = document.createElement("div");
+						_div.className = "c_div";
+						this.e_div.appendChild(_div);
+						this.c_divs[i][j] = _div;
+					}
+				}
+				obj.appendChild(this.e_div);
+				bh.addEvent("click",bh("startButton"),bh.eventBridge(this,this.start))
+				bh.addEvent("click",bh("pauseButton"),bh.eventBridge(this,this.pause))
+			},
+			createBlock:function(){
+				var type=Math.ceil(Math.random()*7);
+				var i=0;
+				var t_div = {}
+				t_div.type = type;
+				switch(type){
+					case 1:
+						t_div.cells=[[0, this.width/2-2], [0, this.width/2-1], [0, this.width/2], [0, this.width/2+1]];
+						break;
+					case 2:
+						t_div.cells=[[0, this.width/2-2], [0, this.width/2-1], [0, this.width/2], [1, this.width/2-2]];
+						break;
+					case 3:
+						t_div.cells=[[0, this.width/2-2], [0, this.width/2-1], [0, this.width/2], [1, this.width/2]];
+						break;
+					case 4:
+						t_div.cells=[[1, this.width/2-1], [1, this.width/2], [1, this.width/2+1], [0, this.width/2]];
+						break;
+					case 5:
+						t_div.cells=[[0, this.width/2-1], [0, this.width/2], [1, this.width/2-1], [1, this.width/2]];
+						break;
+					case 6:
+						t_div.cells=[[0, this.width/2-1], [0, this.width/2], [1, this.width/2], [1, this.width/2+1]];
+						break;
+					case 7:
+						t_div.cells=[[0, this.width/2], [0, this.width/2+1], [1, this.width/2-1], [1, this.width/2]];
+						break;
+				};
+				return t_div;
+			},
+			pause:function(){
+				clearTimeout(this.setTimeoutId);
+				bh.removeEvent("keydown",this.e_div,this.pressEvent);
+			},
+			start:function(){
+				bh.addEvent("keydown",this.e_div,this.pressEvent);
+				this.e_div.focus();
+				this.run();
+			},
+			end:function(){
+				this.pause();
+				alert("您的得分是:"+this.score);
+			},
+			run:function(){
+				this.moveDown();
+				this.setTimeoutId = setTimeout(bh.eventBridge(this,this.run),500);
+			},
+			load:function(){
+				if(this.next_div.type){
+					this.now_div = this.next_div;
+					this.next_div = this.createBlock();
+				}else{
+					this.now_div = this.createBlock();
+					this.next_div = this.createBlock();
+				}
+			},
+			clear:function(){
+				for(var i=0;i<this.now_div.cells.length;i++){
+					this.c_divs[this.now_div.cells[i][0]][this.now_div.cells[i][1]].className='c_div';
+				}
+			},
+			flush:function(){
+				for(var i=0;i<this.now_div.cells.length;i++){
+					this.c_divs[this.now_div.cells[i][0]][this.now_div.cells[i][1]].className='c_over';
+				}
+			},
+			moveDown:function(){
+				this.clear();
+				for(var i=0;i<this.now_div.cells.length;i++){
+					if(this.now_div.cells[i][0]+1 == this.height ||this.c_divs[this.now_div.cells[i][0]+1][this.now_div.cells[i][1]].className == "c_end"){
+						var endFlage = false;
+						for(var j=0;j<this.now_div.cells.length;j++){
+							this.c_divs[this.now_div.cells[j][0]][this.now_div.cells[j][1]].className = "c_end";
+							if(this.now_div.cells[j][0] == 0 ){
+								endFlage = true;
+							}
+						}
+						if(endFlage){
+							this.end();
+							break;
+						}
+						this.fullLine();
+						this.createBlock();
+						this.load();
+					}
+				}
+				for(i=0;i<this.now_div.cells.length;i++){
+					this.now_div.cells[i][0]++;
+				}
+				this.flush();
+			},
+			moveLeft:function(){
+				var flage = true;
+				for(var i=0;i<this.now_div.cells.length;i++){
+					if(this.now_div.cells[i][1] == 0 ||this.c_divs[this.now_div.cells[i][0]][this.now_div.cells[i][1]-1].className == "c_end"){
+						flage = false;
+					}
+				}
+				if(flage){
+					this.clear();
+					for(var i=0;i<this.now_div.cells.length;i++){
+						this.now_div.cells[i][1]--;
+					}
+					this.flush();
+				}
+			},
+			moveRight:function(){
+				var flage = true;
+				for(var i=0;i<this.now_div.cells.length;i++){
+					if(this.now_div.cells[i][1]+1 == this.width ||this.c_divs[this.now_div.cells[i][0]][this.now_div.cells[i][1]+1].className == "c_end"){
+						flage = false;
+					}
+				}
+				if(flage){
+					this.clear();
+					for(var i=0;i<this.now_div.cells.length;i++){
+						this.now_div.cells[i][1]++;
+					}
+					this.flush();
+				}
+			},
+			findMin:function(arr){
+				var minX=9999;
+				var minY=9999;
+				for(i=0;i<arr.length;i++)
+				{
+					if(minX>arr[i][0])
+					{
+						minX=arr[i][0];
+					}
+					if(minY>arr[i][1])
+					{
+						minY=arr[i][1];
+					}
+				}
+				return {x: minX, y: minY};
+			},
+			fullLine:function(){
+				var minx = this.now_div.cells[0][0];
+				var maxx = this.now_div.cells[0][0];
+				for (var i=0;i<this.now_div.cells.length;i++){
+					minx = minx<this.now_div.cells[i][0]?minx:this.now_div.cells[i][0];
+					maxx = maxx>this.now_div.cells[i][0]?maxx:this.now_div.cells[i][0];
+				}
+				var judge = true;
+				var arr =[];
+				outline:
+				for(var i=minx;i<=maxx;i++){
+					for(j=0;j<this.width;j++){
+						if(this.c_divs[i][j].className != "c_end"){
+							continue outline;
+						}
+					}
+					arr.push(i);
+					for(m=i;m>0;m--){
+						for(n=0;n<this.width;n++){
+							this.c_divs[m][n].className = this.c_divs[m-1][n].className;
+						}
+					}
+				}
+				switch(arr.length){
+					case 1:this.score += 100;break;
+					case 2:this.score += 300;break;
+					case 3:this.score += 600;break;
+					case 4:this.score += 1000;break;
+				}
+				this.scorePannel.innerHTML = this.score;
+			},
+			turn:function(){
+				russia.clear();
+				var oMin=this.findMin(this.now_div.cells);
+				var arr1=[];
+				var arr2=[];
+				var arr3=[]
+				for(i=0;i<this.now_div.cells.length;i++){
+					arr1[i]=[this.now_div.cells[i][0]-oMin.x, this.now_div.cells[i][1]-oMin.y];
+					arr2[i]=[arr1[i][1], 4-arr1[i][0]];
+				}
+				var oMinTmp=this.findMin(arr2);
+				for(i=0;i<arr2.length;i++){
+					arr2[i][0]-=oMinTmp.x;
+					arr2[i][1]-=oMinTmp.y;
+				}
+				arr1 = arr2;
+				for(i=0;i<this.now_div.cells.length;i++){
+					arr3[i]=[oMin.x+arr1[i][0],oMin.y+arr1[i][1]];
+				}
+				for(i=0;i<this.now_div.cells.length;i++){
+					if(arr3[i][0]<0 || arr3[i][0]>=this.height || arr3[i][1]<0 || arr3[i][1]>=this.height || this.c_divs[arr3[i][0]][arr3[i][1]].className=='c_end')
+					{
+						return;
+					}
+				}
+				for(i=0;i<arr3.length;i++){
+					this.now_div.cells[i]=arr3[i];
+				}
+				russia.flush();
+			},
+			keyHandle:function(event){
+				var key = event.keyCode;
+				switch(key){
+					case 65:this.moveLeft();break;
+					case 87:this.turn();break;
+					case 68:this.moveRight();break;
+					case 83:this.moveDown();break;
+					default :break;
+				}
+			}
+		})
+		var russia = new Russia(bh("russia"),20,16,bh("scorePannel"));
+		russia.load();
+		russia.flush();
+	</script>
+</body>
+</html>
