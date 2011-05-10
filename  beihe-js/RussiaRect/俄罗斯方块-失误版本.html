@@ -53,27 +53,31 @@
 				var ymax = Math.max(this.now_div[1].y,this.now_div[2].y,this.now_div[3].y,this.now_div[4].y);
 				var ratio = []
 				var flage = true;
-				for(i=1;i<5;i++){
-					if(this.now_div[i].x == xmax){
-						if(this.c_divs[xmax+1][this.now_div[i].y].className != "c_div"){
-							flage = false;
+				if(this.now_div[1].x<this.height-1&&this.now_div[2].x<this.height-1&&this.now_div[3].x<this.height-1&&this.now_div[4].x<this.height-1
+				){
+					for(i=1;i<5;i++){
+						if(this.now_div[i].x == xmax){
+							if(this.c_divs[xmax+1][this.now_div[i].y].className != "c_div"){
+								flage = false;
+							}
 						}
 					}
-				}
-				if(this.now_div[1].x<this.height-1&&this.now_div[2].x<this.height-1&&this.now_div[3].x<this.height-1&&this.now_div[4].x<this.height-1
-				&&flage){
-					this.c_divs[this.now_div[1].x][this.now_div[1].y].className = "c_div";
-					this.c_divs[this.now_div[2].x][this.now_div[2].y].className = "c_div";
-					this.c_divs[this.now_div[3].x][this.now_div[3].y].className = "c_div";
-					this.c_divs[this.now_div[4].x][this.now_div[4].y].className = "c_div";
-					this.now_div[1].x += 1;
-					this.now_div[2].x += 1;
-					this.now_div[3].x += 1;
-					this.now_div[4].x += 1;
-					this.c_divs[this.now_div[1].x][this.now_div[1].y].className = "c_over";
-					this.c_divs[this.now_div[2].x][this.now_div[2].y].className = "c_over";
-					this.c_divs[this.now_div[3].x][this.now_div[3].y].className = "c_over";
-					this.c_divs[this.now_div[4].x][this.now_div[4].y].className = "c_over";
+					if(flage){
+						this.c_divs[this.now_div[1].x][this.now_div[1].y].className = "c_div";
+						this.c_divs[this.now_div[2].x][this.now_div[2].y].className = "c_div";
+						this.c_divs[this.now_div[3].x][this.now_div[3].y].className = "c_div";
+						this.c_divs[this.now_div[4].x][this.now_div[4].y].className = "c_div";
+						this.now_div[1].x += 1;
+						this.now_div[2].x += 1;
+						this.now_div[3].x += 1;
+						this.now_div[4].x += 1;
+						this.c_divs[this.now_div[1].x][this.now_div[1].y].className = "c_over";
+						this.c_divs[this.now_div[2].x][this.now_div[2].y].className = "c_over";
+						this.c_divs[this.now_div[3].x][this.now_div[3].y].className = "c_over";
+						this.c_divs[this.now_div[4].x][this.now_div[4].y].className = "c_over";
+					}else{
+						this.load();
+					}
 				}else{
 					this.load();
 				}
@@ -134,7 +138,7 @@
 				var figure = [[],[],[],[],[],[],[]]
 			},
 			createfigure:function (){
-				rects = [[1,{x:1,y:1},{x:1,y:0},{x:0,y:1},{x:1,y:2}],[2,{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:1,y:2}]];
+				rects = [[1,{x:1,y:1},{x:2,y:1},{x:1,y:0},{x:0,y:1}],[2,{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:1,y:2}]];
 				var i = Math.floor(Math.random()*2); 
 				return rects[i];
 			}
