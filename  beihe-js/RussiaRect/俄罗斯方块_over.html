@@ -28,6 +28,7 @@
 	<script type="text/javascript">
 		var Russia = bh.create({
 			init:function(obj,height,width,scorePannel){
+				this.overFlage=false;
 				this.score = 0;
 				this.scorePannel = scorePannel;
 				this.height =height;
@@ -89,6 +90,13 @@
 				bh.removeEvent("keydown",this.e_div,this.pressEvent);
 			},
 			start:function(){
+				if(this.overFlage){
+					for(i=0;i<this.height;i++){
+						for(j=0;j<this.width;j++){
+							this.c_divs[i][j].className = "c_div";
+						}
+					}
+				}
 				bh.addEvent("keydown",this.e_div,this.pressEvent);
 				this.e_div.focus();
 				this.run();
@@ -124,14 +132,13 @@
 				this.clear();
 				for(var i=0;i<this.now_div.cells.length;i++){
 					if(this.now_div.cells[i][0]+1 == this.height ||this.c_divs[this.now_div.cells[i][0]+1][this.now_div.cells[i][1]].className == "c_end"){
-						var endFlage = false;
 						for(var j=0;j<this.now_div.cells.length;j++){
 							this.c_divs[this.now_div.cells[j][0]][this.now_div.cells[j][1]].className = "c_end";
 							if(this.now_div.cells[j][0] == 0 ){
-								endFlage = true;
+								this.overFlage = true;
 							}
 						}
-						if(endFlage){
+						if(this.overFlage){
 							this.end();
 							break;
 						}
