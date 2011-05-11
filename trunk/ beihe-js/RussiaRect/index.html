@@ -4,7 +4,8 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 	<title>俄罗斯方块</title>
 	<style type="text/css">
-		.e_div{border-top:1px solid #ccc;border-left:1px solid #ccc;width:240px; overflow:hidden;}
+		#russia{overflow:hidden;}
+		.e_div{border-top:1px solid #ccc;border-left:1px solid #ccc;width:240px;}
 		.c_div{border-bottom:1px solid #ccc;border-right:1px solid #ccc;width:19px;height:19px;float:left;}
 		.c_over{border-bottom:1px solid #ccc;border-right:1px solid #ccc;width:19px;height:19px;float:left;background:#C2222A;}
 		.c_end{border-bottom:1px solid #ccc;border-right:1px solid #ccc;width:19px;height:19px;float:left;background:#555555;}
@@ -33,11 +34,18 @@
 				this.scorePannel = scorePannel;
 				this.height =height;
 				this.width = width;
+				this.n_div = document.createElement("div");
 				this.e_div = document.createElement("div");
+				this.e_div.style.cssFloat = "left";
+				this.n_div.style.cssFloat = "left";
 				this.e_div.tabIndex= -1;
-				this.e_div.className = "e_div"
+				this.e_div.className = "e_div";
+				this.n_div.className = "e_div";
+				this.n_div.style.width = 80+"px";
+				this.n_div.style.marginLeft = "10px";
 				this.e_div.style.width = (20*width) +"px";
 				this.c_divs = [];
+				this.n_divs=[];
 				this.now_div = {};
 				this.next_div = {};
 				this.setTimeoutId = null;
@@ -51,7 +59,17 @@
 						this.c_divs[i][j] = _div;
 					}
 				}
+				for(i=0;i<4;i++){
+					this.n_divs[i] = []
+					for(j=0;j<4;j++){
+						var _div = document.createElement("div");
+						_div.className = "c_div";
+						this.n_div.appendChild(_div);
+						this.n_divs[i][j] = _div;
+					}
+				}
 				obj.appendChild(this.e_div);
+				obj.appendChild(this.n_div);
 				bh.addEvent("click",bh("startButton"),bh.eventBridge(this,this.start))
 				bh.addEvent("click",bh("pauseButton"),bh.eventBridge(this,this.pause))
 			},
@@ -96,6 +114,11 @@
 							this.c_divs[i][j].className = "c_div";
 						}
 					}
+					this.next_div = {};
+					this.load();
+					this.score = 0;
+					this.fullLine();
+					this.overFlage = false;
 				}
 				bh.addEvent("keydown",this.e_div,this.pressEvent);
 				this.e_div.focus();
@@ -110,12 +133,20 @@
 				this.setTimeoutId = setTimeout(bh.eventBridge(this,this.run),500);
 			},
 			load:function(){
-				if(this.next_div.type){
+				for(i=0;i<4;i++){
+					for(j=0;j<4;j++){
+						this.n_divs[i][j].className = "c_div";
+					}
+				}
+				if(this.next_div.cells){
 					this.now_div = this.next_div;
 					this.next_div = this.createBlock();
 				}else{
 					this.now_div = this.createBlock();
 					this.next_div = this.createBlock();
+				}
+				for(i=0;i<4;i++){
+					this.n_divs[this.next_div.cells[i][0]+1][this.next_div.cells[i][1]-this.width/2+2].className = "c_over";
 				}
 			},
 			clear:function(){
@@ -144,13 +175,13 @@
 						}
 						this.fullLine();
 						this.createBlock();
-						this.load();
+						this.load();					
 					}
 				}
 				for(i=0;i<this.now_div.cells.length;i++){
 					this.now_div.cells[i][0]++;
 				}
-				this.flush();
+				if(!this.overFlage)this.flush();
 			},
 			moveLeft:function(){
 				var flage = true;
