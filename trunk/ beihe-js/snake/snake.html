@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title>贪吃蛇</title>
+	<style type="text/css">
+		.area{width:800px; overflow:hidden; margin:0 auto;}
+		#snakeBox{float:left;min-height:200px;min-width:200px; border-bottom:3px solid #bbb;border-bottom:2px solid #bbb;border-right:2px solid #bbb;border-left:3px solid #bbb;border-top:3px solid #bbb;}
+		#sideBar{float:left;border:1px solid #bbb;width:200px; text-align:center;margin-left:10px;}
+		#scorePannel{font:bold 20px/1.8 "\5B8B\4F53";}
+		.block{float:left;border-right:1px solid #bbb;border-bottom:1px solid #bbb;width:14px;height:14px;}
+		.s_block{float:left;border-right:1px solid #bbb;border-bottom:1px solid #bbb;width:14px;height:14px; background:#000;}
+		.o_blokc{float:leftborder-right:1px solid #bbb;border-bottom:1px solid #bbb;width:14px;height:14px;}
+	</style>
+	<script type="text/javascript" src="../js/base.js"></script>
+</head>
+<body>
+	<div class="area">
+		<div id="snakeBox"></div>
+		<div id="sideBar">
+			<div id="scorePannel">0</div>
+			<div><input type="button" value="开始" id="startButton"/></div>
+			<div><input type="button" value="暂停" id="pauseButton"/></div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		(function(window,undefined){
+			var snakebox;
+			var direction = 3;
+			var score = "0";
+			var environment ={
+				snake : [],
+				rects : [],
+				obstruct : []
+			}
+			var move = function(){
+				var snakehead = [enveironment.rects[0][0],enveironment.rects[0][1]];
+				switch(direction){
+					case 1:	snakehead = [enveironment.rects[0][0],enveironment.rects[0][1]-1];
+					case 2:	snakehead = [enveironment.rects[0][0]-1,enveironment.rects[0][1]];
+					case 3:	snakehead = [enveironment.rects[0][0],enveironment.rects[0][1]+1];
+					case 4:	snakehead = [enveironment.rects[0][0]+1,enveironment.rects[0][1]];
+				}
+				
+				environment.snake.unshift(snakehead);
+				var del = environment.snake.pop();
+				del.className = "block"
+			}
+			var keyHandle=function(event){
+				var key = event.keyCode;
+				switch(key){
+					case 65:direction =1;break;
+					case 87:direction =2;break;
+					case 68:direction =3;break;
+					case 83:direction =4;break;
+					default :break;
+				}
+			}
+			window.snake ={
+				init:function(obj,width,height){
+					obj.style.width = width*15 +"px";
+					snakebox = obj;
+					obj.tabIndex = -1;
+					for(i=0;i<height;i++){
+						environment.snake[i] = [];
+						for(j=0;j<width;j++){
+							var _div = document.createElement("div");
+							_div.className="block"
+							environment.snake[i][j] = _div;
+							obj.appendChild(_div);
+						}
+					}
+					environment.rects =[[height/2,width/2-2],[height/2,width/2-1],[height/2,width/2],[height/2,width/2+1],[height/2,width/2+2]];
+					for(i=0;i<environment.rects.length;i++){
+						environment.snake[environment.rects[i][0]][environment.rects[i][1]].className="s_block";
+					}
+					
+				},
+				start:function(){
+					snakebox.focus();
+					bh.addEvent("keydown",snakebox,keyHandle);
+					move();
+					this.setTimeoutId = setTimeout(bh.eventBridge(this,this.run),500);
+				},
+				pause:function(){
+					
+					bh.addEvent("keydown",snakebox,keyHandle);
+				},
+				getScore:function(){
+					
+				}
+			}
+			
+		})(window)
+		snake.init(bh("snakeBox"),20,20);
+		bh.addEvent("click",bh("startButton"),snake.start)
+	</script>
+</body>
+</html>
