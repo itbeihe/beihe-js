@@ -5,12 +5,12 @@
 	<title>贪吃蛇</title>
 	<style type="text/css">
 		.area{width:800px; overflow:hidden; margin:0 auto;}
-		#snakeBox{float:left;min-height:200px;min-width:200px; border-bottom:3px solid #bbb;border-bottom:2px solid #bbb;border-right:2px solid #bbb;border-left:3px solid #bbb;border-top:3px solid #bbb;}
+		#snakeBox{float:left;min-height:200px;min-width:200px; border-bottom:3px solid #bbb;border-bottom:2px solid #bbb;border-right:2px solid #bbb;border-left:3px solid #bbb;border-top:3px solid #bbb;line-height:14px; }
 		#sideBar{float:left;border:1px solid #bbb;width:200px; text-align:center;margin-left:10px;}
 		#scorePannel{font:bold 20px/1.8 "\5B8B\4F53";}
 		.block{float:left;border-right:1px solid #bbb;border-bottom:1px solid #bbb;width:14px;height:14px;}
-		.s_block{float:left;border-right:1px solid #bbb;border-bottom:1px solid #bbb;width:14px;height:14px; background:#000;}
-		.o_blokc{float:leftborder-right:1px solid #bbb;border-bottom:1px solid #bbb;width:14px;height:14px;}
+		.s_block{float:left;border-right:1px solid #bbb;border-bottom:1px solid #bbb;width:14px;height:14px; background:#000;_overflow:hidden;}
+		.s_food{float:left;border-right:1px solid #bbb;border-bottom:1px solid #bbb;width:14px;height:14px;background:#00ff00;_overflow:hidden;}
 	</style>
 	<script type="text/javascript" src="../js/base.js"></script>
 </head>
@@ -18,82 +18,150 @@
 	<div class="area">
 		<div id="snakeBox"></div>
 		<div id="sideBar">
-			<div id="scorePannel">0</div>
+			<div id="scorePannel"><div>当前分数:0</div><div>当前等级:0</div></div>
 			<div><input type="button" value="开始" id="startButton"/></div>
 			<div><input type="button" value="暂停" id="pauseButton"/></div>
 		</div>
 	</div>
 	<script type="text/javascript">
 		(function(window,undefined){
-			var snakebox;
+			var snakebox, TimeoutId,snakeFoot;
+			var overflage = false;
+			var scorepannel;
 			var direction = 3;
-			var score = "0";
+			var speed = 300;
+			var level = 1;
+			var score = 0;
 			var environment ={
 				snake : [],
 				rects : [],
-				obstruct : []
+				obstruct : [],
+				width:0,
+				height:0,
+				food:[]
 			}
 			var move = function(){
-				var snakehead = [enveironment.rects[0][0],enveironment.rects[0][1]];
+				var snakehead;
 				switch(direction){
-					case 1:	snakehead = [enveironment.rects[0][0],enveironment.rects[0][1]-1];
-					case 2:	snakehead = [enveironment.rects[0][0]-1,enveironment.rects[0][1]];
-					case 3:	snakehead = [enveironment.rects[0][0],enveironment.rects[0][1]+1];
-					case 4:	snakehead = [enveironment.rects[0][0]+1,enveironment.rects[0][1]];
+					case 1:	snakehead = [environment.snake[0][0],environment.snake[0][1]-1];break;
+					case 2:	snakehead = [environment.snake[0][0]-1,environment.snake[0][1]];break;
+					case 3:	snakehead = [environment.snake[0][0],environment.snake[0][1]+1];break;
+					case 4:	snakehead = [environment.snake[0][0]+1,environment.snake[0][1]];break;
+					default:break;
 				}
-				
-				environment.snake.unshift(snakehead);
-				var del = environment.snake.pop();
-				del.className = "block"
+				var go = function(){
+					environment.snake.unshift(snakehead);
+					var del = environment.snake.pop(0);
+					environment.rects[snakehead[0]][snakehead[1]].className = "s_block";
+					environment.rects[del[0]][del[1]].className = "block";
+					timeoutId = setTimeout(move,speed);
+				}
+				var eat = function(){
+					createFood();
+					score += 100; 
+					getScore();
+					environment.snake.unshift(snakehead);
+					environment.rects[snakehead[0]][snakehead[1]].className = "s_block";
+					timeoutId = setTimeout(move,speed);
+				}
+				var over = function(){
+					overflage = true;
+					alert("game over "+"\n"+"您的得分是"+score);
+				}
+				if(environment.rects[snakehead[0]]&&environment.rects[snakehead[0]][snakehead[1]]){
+					switch(environment.rects[snakehead[0]][snakehead[1]].className){
+						case "block":go();break;
+						case "s_block":over();break;
+						case "s_food":eat();break;
+						case "o_block":over();break;
+						default:break;
+					}
+				}else{
+					over();
+				}
+			};
+			var getScore = function(){
+				scorepannel.innerHTML = "<div>当前分数:"+score+"</div><div>当前等级:"+level+"</div>";
+				switch(score){
+					case 100:speed = 250; level = 2;break;
+					case 200:speed = 275; level = 3;break;
+					case 300:speed = 120; level = 4;break;
+					case 400:speed = 75; level = 5;break;
+					case 500:speed = 50; level = 6;break;
+					default:speed = 500;level = 0;break;
+				}
+			};
+			var createFood = function(){
+				do{
+					environment.food[0] =Math.floor(Math.random()*environment.height);
+					environment.food[1] = Math.floor(Math.random()*environment.width);
+				}while(environment.rects[environment.food[0]][environment.food[1]].className != "block");
+				environment.rects[environment.food[0]][environment.food[1]].className = "s_food";
 			}
 			var keyHandle=function(event){
 				var key = event.keyCode;
 				switch(key){
-					case 65:direction =1;break;
-					case 87:direction =2;break;
-					case 68:direction =3;break;
-					case 83:direction =4;break;
-					default :break;
+					case 65:if(direction!=3){direction =1;clearTimeout(timeoutId);move();};break;
+					case 87:if(direction!=4){direction =2;clearTimeout(timeoutId);move();};break;
+					case 68:if(direction!=1){direction =3;clearTimeout(timeoutId);move();};break;
+					case 83:if(direction!=2){direction =4;clearTimeout(timeoutId);move();};break;
 				}
 			}
 			window.snake ={
-				init:function(obj,width,height){
+				init:function(obj,scorep,width,height){
+					environment.width = width;
+					environment.height = height;
+					scorepannel = scorep;
 					obj.style.width = width*15 +"px";
 					snakebox = obj;
 					obj.tabIndex = -1;
 					for(i=0;i<height;i++){
-						environment.snake[i] = [];
+						environment.rects[i] = [];
 						for(j=0;j<width;j++){
 							var _div = document.createElement("div");
 							_div.className="block"
-							environment.snake[i][j] = _div;
+							environment.rects[i][j] = _div;
 							obj.appendChild(_div);
 						}
 					}
-					environment.rects =[[height/2,width/2-2],[height/2,width/2-1],[height/2,width/2],[height/2,width/2+1],[height/2,width/2+2]];
-					for(i=0;i<environment.rects.length;i++){
-						environment.snake[environment.rects[i][0]][environment.rects[i][1]].className="s_block";
+					environment.snake =[[height/2,width/2+2],[height/2,width/2+1],[height/2,width/2],[height/2,width/2-1],[height/2,width/2-2]];
+					for(i=0;i<environment.snake.length;i++){
+						environment.rects[environment.snake[i][0]][environment.snake[i][1]].className="s_block";
 					}
 					
 				},
 				start:function(){
+					if(overflage == true){
+						for(i=0;i<environment.height;i++){
+							for(j=0;j<environment.width;j++){
+								environment.rects[i][j].className = "block";
+							}
+						}
+						environment.snake =[[environment.height/2,environment.width/2+2],[environment.height/2,environment.width/2+1],[environment.height/2,environment.width/2],[environment.height/2,environment.width/2-1],[environment.height/2,environment.width/2-2]];
+						for(i=0;i<environment.snake.length;i++){
+							environment.rects[environment.snake[i][0]][environment.snake[i][1]].className="s_block";
+						};
+						score = 0;
+						level = 0;
+						speed = 300;
+						scorepannel.innerHTML = "<div>当前分数:"+score+"</div><div>当前等级:"+level+"</div>";
+						direction = 3;
+					}
 					snakebox.focus();
+					createFood();
 					bh.addEvent("keydown",snakebox,keyHandle);
 					move();
-					this.setTimeoutId = setTimeout(bh.eventBridge(this,this.run),500);
 				},
 				pause:function(){
-					
 					bh.addEvent("keydown",snakebox,keyHandle);
-				},
-				getScore:function(){
-					
+					clearTimeout(timeoutId);
 				}
 			}
 			
 		})(window)
-		snake.init(bh("snakeBox"),20,20);
+		snake.init(bh("snakeBox"),bh("scorePannel"),20,20);
 		bh.addEvent("click",bh("startButton"),snake.start)
+		bh.addEvent("click",bh("pauseButton"),snake.pause)
 	</script>
 </body>
 </html>
