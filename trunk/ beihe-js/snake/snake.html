@@ -66,6 +66,7 @@
 				}
 				var over = function(){
 					overflage = true;
+					bh.removeEvent("keydown",snakebox,keyHandle);
 					alert("game over "+"\n"+"您的得分是"+score);
 				}
 				if(environment.rects[snakehead[0]]&&environment.rects[snakehead[0]][snakehead[1]]){
@@ -131,7 +132,7 @@
 					
 				},
 				start:function(){
-					if(overflage == true){
+					if(overflage === true){
 						for(i=0;i<environment.height;i++){
 							for(j=0;j<environment.width;j++){
 								environment.rects[i][j].className = "block";
@@ -144,6 +145,7 @@
 						score = 0;
 						level = 0;
 						speed = 300;
+						overflage = false;
 						scorepannel.innerHTML = "<div>当前分数:"+score+"</div><div>当前等级:"+level+"</div>";
 						direction = 3;
 					}
@@ -153,7 +155,7 @@
 					move();
 				},
 				pause:function(){
-					bh.addEvent("keydown",snakebox,keyHandle);
+					bh.removeEvent("keydown",snakebox,keyHandle);
 					clearTimeout(timeoutId);
 				}
 			}
