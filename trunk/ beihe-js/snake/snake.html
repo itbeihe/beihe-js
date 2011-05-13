@@ -27,6 +27,7 @@
 		(function(window,undefined){
 			var snakebox, TimeoutId,snakeFoot;
 			var overflage = false;
+			var paseFlage = true;
 			var scorepannel;
 			var direction = 3;
 			var speed = 300;
@@ -65,6 +66,7 @@
 					timeoutId = setTimeout(move,speed);
 				}
 				var over = function(){
+					paseflage = true;
 					overflage = true;
 					bh.removeEvent("keydown",snakebox,keyHandle);
 					alert("game over "+"\n"+"您的得分是"+score);
@@ -146,15 +148,21 @@
 						level = 0;
 						speed = 300;
 						overflage = false;
+						paseFlage = true;
+						environment.food = [];
 						scorepannel.innerHTML = "<div>当前分数:"+score+"</div><div>当前等级:"+level+"</div>";
 						direction = 3;
 					}
 					snakebox.focus();
-					createFood();
-					bh.addEvent("keydown",snakebox,keyHandle);
-					move();
+					if(environment.food[0] == undefined){ createFood();}
+					if(paseFlage == true){
+						bh.addEvent("keydown",snakebox,keyHandle);
+						move();
+						paseFlage = false;
+					}
 				},
 				pause:function(){
+					paseFlage = true;
 					bh.removeEvent("keydown",snakebox,keyHandle);
 					clearTimeout(timeoutId);
 				}
