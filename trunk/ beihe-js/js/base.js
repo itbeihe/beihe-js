@@ -185,11 +185,37 @@
 	window.bh.getCharCode = getCharCode;
 	
 	//css行为
-	function addClassName(obj,newclass){
-		var name = obj.className;
-		name =name +" "+ newclass;
-		obj.className = name;
+	function addClassName(obj,newclass){  
+		var classArray = newclass.split(/\s+/),
+			result = obj.className,
+			classMatch = " " + result + " ",
+			i = 0,
+			l = classArray.length;
+		for (; i < l; i++){
+			 if ( classMatch.indexOf( " " + classArray[i] + " " ) < 0 ) {
+				 result += (result ? ' ' : '') + classArray[i];
+			 }
+		}
+		obj.className = result;
 	}
 	window.bh.addClassName = addClassName;
+	function removeClassName(obj,reclass){
+		var oldClasses = obj.className.split(/\s+/),
+			newClasses = reclass.split(/\s+/),
+			lenOld,
+			lenDel = newClasses.length,
+			i,
+			j;
+			for(i=0;i<lenDel;++i){
+				for(j=0,lenOld=oldClasses.length;j<lenOld;++j){
+					if(oldClasses[j] == newClasses[i]){
+						oldClasses.splice(j,1);
+						break;
+					}
+				}
+			}
+		obj.className = oldClasses.join(" ");
+	}
+	window.bh.removeClassName = removeClassName;
 	
-})()
+})(window,undefined)

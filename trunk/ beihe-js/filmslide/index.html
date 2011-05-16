@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title>幻灯片</title>
+	<style type="text/css">
+		div,body,ul{margin:0;padding:0;}	
+		li{ list-style:none;}
+		body{background:#ccc;}
+		.filmslide{position:relative; margin:0 auto;height:500px;width:800px; overflow:hidden;}	
+		.page{background:#3399FF;display:none;position:absolute;left:0px;top:0px;height:490px;width:790px;border:5px solid #fff;}
+		.show{display:block;}
+		.buttonDiv{background:#fff;overflow:hidden;position:absolute;right:0px;bottom:0px; z-index:10;}
+		.prevButton{border:1px solid #000;width:20px; height:20px;float:left;}
+		.nextButton{border:1px solid #000;width:20px; height:20px;float:left;}
+	</style>
+	<script type="text/javascript" src="../js/base.js"></script>
+</head>
+<body>
+	<div id="filmslide">
+	</div>
+	<script type="text/javascript">
+		var pageinfo =[{
+			type:1,//标题内容模板
+			content:"<div class='title'>标题</div><div class='content'>幻灯片第一页</div>",
+			animate:1
+		},{
+			type:2,//列表模板
+			content:"<ul><li>列表内容一</li><li>列表内容二</li></ul>",
+			animate:1
+		},{
+			type:1,
+			content:"幻灯片第三页",
+			animate:1
+		},{
+			type:1,
+			content:"幻灯片第四页",
+			animate:1
+		}];
+		var filmslide = {
+			basediv:null,
+			pageinfo:[],
+			pageList:[],
+			pageNowNum:0,
+			prevButton:null,
+			nextbutton:null,
+			timeLock:false,
+			init:function(pageinfo,obj){
+				this.pageinfo = pageinfo;
+				bh.addClassName(obj,"filmslide");
+				this.prevButton = document.createElement("div");
+				this.prevButton.className = "prevButton";
+				this.prevButton.innerHTML = "上";
+				this.nextButton = document.createElement("div");
+				this.nextButton.className = "nextButton";
+				this.nextButton.innerHTML = "下";
+				var buttonDiv = document.createElement("div");
+				buttonDiv.className = "buttonDiv";
+				buttonDiv.appendChild(this.prevButton);
+				buttonDiv.appendChild(this.nextButton);
+				obj.appendChild(buttonDiv);
+				for(i=0;i<pageinfo.length;i++){
+					var _div = document.createElement("div");
+					bh.addClassName(_div,"page");
+					_div.innerHTML = pageinfo[i].content;
+					this.pageList[i] = _div;
+					_div.style.zIndex = 1;
+					if(i==0)bh.addClassName(_div,"show");
+					obj.appendChild(_div);
+				}
+				bh.addEvent("click",this.prevButton,bh.eventBridge(this,this.prev));
+				bh.addEvent("click",this.nextButton,bh.eventBridge(this,this.next));
+			},
+			animate:function(nownum,nextnum,animatetype){
+				var nowDiv = this.pageList[nownum],nextDiv = this.pageList[nextnum];
+				var move=function(nowDiv,nextDiv,nextnum,animatetype){
+					filmslide.timeLock = true;
+					bh.addClassName(nextDiv,"show");
+					nowDiv.style.zIndex = 5;
+					setTimeout(function(){
+						var nowX = nowDiv.offsetLeft,nowY = nowDiv.offsetTop,speedX,speedY;
+						switch(animatetype){
+						case 1:speedX = -100 ;speedY = 0;break;//左
+						case 2:speedX = -100 ;speedY = -100 ;break;//左上
+						case 3:speedX = 0 ;speedY = -100 ;break;//上
+						case 4:speedX = 100 ;speedY = -100 ;break;//右上
+						case 5:speedX = 100 ;speedY = 0 ;break;//右
+						case 6:speedX = 100 ;speedY = 100 ;break;//右下
+						case 7:speedX = 0 ;speedY = 100 ;break;//下
+						case 8:speedX = -100 ;speedY = 100 ;break;//左下
+						default:speedX = 0 ;speedY = 0;break;
+						}
+						nowDiv.style.left = nowX + speedX+"px";
+						nowDiv.style.top = nowY + speedY+"px";
+						if(speedX == 0&&speedY ==0){
+							console.log("悲剧");
+						}else if(Math.abs(nowX) < nowDiv.parentNode.offsetWidth&&Math.abs(nowY) < nowDiv.parentNode.offsetHeight){
+							setTimeout(arguments.callee,100);
+						}else{
+							nowDiv.style.left ="0px";
+							nowDiv.style.top ="0px";
+							nowDiv.style.zIndex = 1;
+							if(nowDiv != nextDiv){
+								bh.removeClassName(nowDiv,"show");
+								filmslide.pageNowNum = nextnum;
+							}
+							filmslide.timeLock = false;
+						}
+					},100)
+				}
+				if(!this.timeLock)move(nowDiv,nextDiv,nextnum,animatetype);
+			},
+			go:function(pagenum,animatetype){
+				if(pagenum>=0&&pagenum<this.pageList.length){
+					if(!animatetype) animatetype = Math.floor(Math.random()*7+1);
+					this.animate(this.pageNowNum,pagenum,animatetype);
+				}
+				
+			},
+			prev:function(){
+				this.go(this.pageNowNum-1);
+			},
+			next:function(){
+				this.go(this.pageNowNum+1);
+			}
+		}
+		filmslide.init(pageinfo,bh("filmslide"));
+	</script>
+</body>
+</html>
