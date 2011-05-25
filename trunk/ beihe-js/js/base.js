@@ -121,7 +121,6 @@
 	function stopPropagation(event){
 		if(event.stopPropagation){
 			event.stopPropagation();
-			console.log("true")
 		}else{
 			event.cancelBubble =true;
 		}
@@ -132,7 +131,7 @@
 	}
 	window.bh.getEvent = getEvent;
 	function getTarget(event){
-		return event.target||eventsrcElement;
+		return event.target||event.srcElement;
 	}
 	window.bh.getTarget = getTarget;
 	//图片预加载
