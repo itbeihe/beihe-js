@@ -216,5 +216,18 @@
 		obj.className = oldClasses.join(" ");
 	}
 	window.bh.removeClassName = removeClassName;
-	
+	//获取外联样式
+	var getStyle = function(el,style){
+		if(!+"\v1"){
+			style = style.replace(/\-(\w)/g,function(all,letter){
+				return letter.toUpperCase();
+			});
+			var value = el.currentStyle[style];
+			(value=="auto") &&(value ="0px");
+			return value;
+		}else{
+			return document.defaultView.getComputedStyle(el,null).getPropertyValue(style)
+		}
+	}
+	window.bh.getStyle = getStyle;
 })(window,undefined)
