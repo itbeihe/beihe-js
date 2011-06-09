@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title>拖动条</title>
+	<script type="text/javascript" src="../js/base.js"></script>
+	<style type="text/css">
+		.drag_area{width:300px;background:#ff0000;height:30px; overflow:hidden;}
+		.drag_button{width:30px;float:left;height:30px;background:#00ff00;}
+		.drag_over{width:10px;float:left;height:30px;background:#0000ff;}
+	</style>
+</head>
+<body>
+	<div id="test"></div>
+	<script type="text/javascript">
+		bh.dragbutton = function(obj){
+			var _obj = obj;
+			obj.className = "drag_area";
+			var _ldiv = document.createElement("div");
+			_ldiv.className ="drag_over";
+			_obj.appendChild(_ldiv);
+			var _button = document.createElement("div");
+			_button.className = "drag_button";
+			_obj.appendChild(_button);
+			var _position = {
+				X:0,
+				startX:0,
+				flag:false,
+				over:false
+			};
+			bh.addEvent("mousemove",_obj,drag);
+			bh.addEvent("mousedown",_button,dragstart);
+			bh.addEvent("mouseup",_button,dragend);
+			
+			function drag(event){
+				var x = parseInt(_button.style.marginLeft)||0;
+				var y = _obj.offsetWidth-50;
+				if(_position.flag&&x<y){
+					_position.X = event.clientX;
+					_button.style.marginLeft =(_position.X-_position.startX)+"px";
+				}else if(_position.flag&&x>y){
+					_button.style.marginLeft= "260px";
+					_position.over = true;
+					dragend();
+				}
+			};
+			function dragstart(event){
+				_position.flag = true;
+				_position.startX = event.clientX;
+			};
+			function dragend(event){
+				_position.flag = false;
+				if(_position.over){
+					_position.over = false;
+					alert("成功");
+				}else{
+					_button.style.marginLeft= "0px";
+					_position.startX = 0;
+				}
+				
+			}
+		};
+		bh.dragbutton(bh("test"));
+	</script>
+</body>	
+</html>
