@@ -1,0 +1,36 @@
+#headerbox{background:url(../images/index/headerb.jpg)  repeat;}
+.header{width:1200px;background:url(../images/index/headerbg.jpg) no-repeat;margin:0 auto;}
+.header .area{height:119px;}
+.loginBar{height:24px;line-height:24px;font-size:12px;overflow:hidden;}
+.loginBox{float:right;}
+.logo{width:150px;height:75px;float:left;}
+.logo a{display:blcok;height:75px;width:150px;}
+.logo img{border:none;}
+.serachBar{float:right;margin-top:5px;}
+.serachform{border:1px solid #90AC64;height:21px;overflow:hidden;_width:180px;}
+.serachtext{border:none;border-right:1px solid #90AC64;height:19px;line-height:15px;font-size:12px;padding:3px 0px;vertical-align:top;}
+.serachsubmit{height:19px;margin:1px;background:#6B8819;border:none;line-height:15px;font-size:12px;padding:0px 3px 1px 3px;color:#fff;width:50px; vertical-align:top;}
+
+#mainnavBox{background:url(../images/common/mainnavbg.jpg) repeat-x;font-size:12px;line-height:20px;}
+#mainnavBox .area{height:65px;padding:2px;}
+.mainnav{height:30px;}
+.mainnav li{float:left;width:63px;height:30px;line-height:30px; text-align:center;}
+.mainnav li a{color:#fff;}
+.mainnav li a:visited{color:#fff;}
+.mainnav li a:hover{color:#fff;text-decoration:none;}
+.mainnav li a:active{color:#fff;}
+
+.mainnav .conn{background:url(../images/common/commonnav_bg.png) no-repeat scroll;_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/common/commonnav_bg.png'?sizingMethod='scale');}
+.sonbar{background:url(../images/common/sonbarbg2.png) repeat-x; height:31px;line-height:30px;}
+.sonbar .leftb{float:left;width:20px;background:url(../images/common/sonbarbg1.png) no-repeat scroll;}
+.sonbar .rightb{float:right;width:20px;background:url(../images/common/sonbarbg3.png) no-repeat scroll;}
+.sonnav {float:left;}
+.sonnav li{float:left;font-size:14px;}
+.sonnav li a{color:#699D3B;padding:0px 10px;font-weight:600;}
+.sonnav li a:visited{color:#699D3B;}
+.sonnav li a:hover{color:#699D3B;}
+.sonnav li .conn{}
+.sonbar .conn a{color:#000;}
+.sonbar .conn a:visited{color:#000;}
+.sonbar .conn a:hover{color:#000;}
+.sonbar .conn a:active{color:#000;}
